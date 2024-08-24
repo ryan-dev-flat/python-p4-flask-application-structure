@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+
+import re
 from flask import Flask
+
 
 app = Flask(__name__)
 
@@ -10,7 +13,15 @@ def index():
 
 @app.route('/<string:username>')
 def user(username):
-    return f'<h1>Profile for {username}</h1>'
+    url = f'/<string:{username}>'
+    exp= re.compile('[A-Za-z]+')
+    matches = exp.findall(url)
+    if len(matches) >= 2:
+        type, parameter = matches[:2]
+    else:
+        type, parameter = 'unknown', 'unknown'
 
-    if __name__ == '__main__':
-        app.run(port=5555, debug=True)
+    return f'<h1>Profile for {parameter} (Type: {type})</h1>'
+
+if __name__ == '__main__':
+    app.run(port=5555, debug=True)
